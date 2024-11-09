@@ -1,4 +1,4 @@
-name: test-dummy
+name: test-dumm
 on: [push]
 
 jobs:
