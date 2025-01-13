@@ -35,22 +35,22 @@ def main():
             with open(os.path.join(dirname, 'index.html'), 'w', encoding="utf-8") as f:
                 f.write("\n".join([
                     get_template_head(dirname),
-                    "<tr class=\"w-2/4 bg-white dark:bg-gray-700 border-b hover:bg-gray-50 dark:hover:bg-gray-600\"><th scope=\"row\" class=\" py-2 px-2 lg:px-6 font-medium text-gray-900 dark:text-gray-200 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64("o.folder-home") + "\"/>" +
-                        "<a class=\"my-auto text-blue-700 dark:text-blue-400\" href=\"../\">../</a></th><td>-</td><td>-</td></tr>" if dirname != "." else "",
+                    "<tr class=\"w-2/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64("o.folder-home") + "\"/>" +
+                        "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"../\">../</a></th><td>-</td><td>-</td></tr>" if dirname != "." else "",
                 ]))
-                
+
                 # Sort dirnames alphabetically
                 dirnames.sort()
                 for subdirname in dirnames:
-                    f.write("<tr class=\"w-1/4 bg-white dark:bg-gray-700 border-b hover:bg-gray-50 dark:hover:bg-gray-600\"><th scope=\"row\" class=\" py-2 px-2 lg:px-6 font-medium text-gray-900 dark:text-gray-200 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64("o.folder") + "\"/>" +
-                            "<a class=\"my-auto text-blue-700 dark:text-blue-400\" href=\"" + subdirname + "/\">" +
+                    f.write("<tr class=\"w-1/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64("o.folder") + "\"/>" +
+                            "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"" + subdirname + "/\">" +
                             subdirname + "/</a></th><td>-</td><td>-</td></tr>\n")
-                
+
                 # Sort filenames alphabetically
                 filenames.sort()
                 for filename in filenames:
                     path = (dirname == '.' and filename or dirname + '/' + filename)
-                    f.write("<tr class=\"w-1/4 bg-white dark:bg-gray-700 border-b hover:bg-gray-50 dark:hover:bg-gray-600\"><th scope=\"row\" class=\" py-2 px-2 lg:px-6 font-medium text-gray-900 dark:text-gray-200 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64(filename) + "\"/>" + "<a class=\"my-auto text-blue-700 dark:text-blue-400\" href=\"" + filename + "\">" + filename + "</a></th><td>" +
+                    f.write("<tr class=\"w-1/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64(filename) + "\"/>" + "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"" + filename + "\">" + filename + "</a></th><td>" +
                             get_file_size(path) + "</td><td>" + get_file_modified_time(path) + "</td></tr>\n")
 
                 f.write("\n".join([
