@@ -30,14 +30,14 @@ def main():
         print("No directory specified")
         sys.exit()
 
-    # Iterate through all subdirectories and files
+    # Count the total number of files excluding 'index.html'
     for dirname, dirnames, filenames in os.walk('.'):
-        # Exclude index.html from the file count
+        # Exclude index.html from the count
         filenames = [filename for filename in filenames if filename != 'index.html']
-
-        # Update total file count (excluding index.html)
         total_files += len(filenames)
 
+    # Iterate again to generate index.html files in each subdirectory
+    for dirname, dirnames, filenames in os.walk('.'):
         if 'index.html' in filenames:
             print(f"{dirname}/index.html already exists, skipping...")
         else:
@@ -119,11 +119,10 @@ def get_template_foot(total_files):
     foot = foot.replace("{{buildtime}}", "at " + dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC'))
     foot = foot.replace("{{totalfiles}}", str(total_files))  # Replaces {{totalfiles}} with the total file count
     
-    # Debug print
-    print(f"Foot content after replacement:\n{foot}\n")
+    # Debug print (optional)
+    # print(f"Foot content after replacement:\n{foot}\n")
 
     return foot
-
 
 
 def get_icon_base64(filename):
