@@ -30,13 +30,18 @@ def main():
         print("No directory specified")
         sys.exit()
 
+    # Iterate through all subdirectories and files
     for dirname, dirnames, filenames in os.walk('.'):
-        total_files += len(filenames)  # Update total file count
+        # Exclude index.html from the file count
+        filenames = [filename for filename in filenames if filename != 'index.html']
+
+        # Update total file count (excluding index.html)
+        total_files += len(filenames)
 
         if 'index.html' in filenames:
-            print("index.html already exists, skipping...")
+            print(f"{dirname}/index.html already exists, skipping...")
         else:
-            print("index.html does not exist, generating")
+            print(f"{dirname}/index.html does not exist, generating")
             with open(os.path.join(dirname, 'index.html'), 'w', encoding="utf-8") as f:
                 f.write("\n".join([get_template_head(dirname)]))
 
@@ -59,6 +64,9 @@ def main():
                             get_file_size(path) + "</td><td>" + get_file_modified_time(path) + "</td></tr>\n")
 
                 f.write("\n".join([get_template_foot(total_files)]))
+
+    # Log the total number of files (excluding index.html)
+    print(f"Total files (excluding index.html): {total_files}")
 
 
 def get_file_size(filepath):
