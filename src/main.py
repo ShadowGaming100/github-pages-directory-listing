@@ -114,9 +114,16 @@ def get_template_foot(total_files):
     """
     with open("/src/template/foot.html", "r", encoding="utf-8") as file:
         foot = file.read()
+
+    # Ensure that the total_files placeholder is replaced with the actual value
     foot = foot.replace("{{buildtime}}", "at " + dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC'))
-    foot = foot.replace("{{totalfiles}}", str(total_files))
+    foot = foot.replace("{{totalfiles}}", str(total_files))  # Replaces {{totalfiles}} with the total file count
+    
+    # Debug print
+    print(f"Foot content after replacement:\n{foot}\n")
+
     return foot
+
 
 
 def get_icon_base64(filename):
