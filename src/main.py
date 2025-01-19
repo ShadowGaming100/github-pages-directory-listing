@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 """
-use os package to iterate through files in a directory
+Use os package to iterate through files in a directory
 """
 import os
 import sys
@@ -8,36 +8,41 @@ import json
 import base64
 import datetime as dt
 
+# Load icon mappings from JSON
 with open('/src/icons.json', encoding="utf-8") as json_file:
     data = json.load(json_file)
 
 
 def main():
     """
-    main function
+    Main function
     """
+    total_files = 0  # Initialize file count
+
     if len(sys.argv) > 1:
-        print("changing directory to " + sys.argv[1])
+        print("Changing directory to " + sys.argv[1])
         try:
             os.chdir(sys.argv[1])
         except OSError:
-            print("Cannot change the current working Directory")
+            print("Cannot change the current working directory")
             sys.exit()
     else:
-        print("no directory specified")
+        print("No directory specified")
         sys.exit()
 
     for dirname, dirnames, filenames in os.walk('.'):
+        total_files += len(filenames)  # Update total file count
+
         if 'index.html' in filenames:
             print("index.html already exists, skipping...")
         else:
             print("index.html does not exist, generating")
             with open(os.path.join(dirname, 'index.html'), 'w', encoding="utf-8") as f:
-                f.write("\n".join([
-                    get_template_head(dirname),
-                    "<tr class=\"w-2/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64("o.folder-home") + "\"/>" +
-                        "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"../\">../</a></th><td>-</td><td>-</td></tr>" if dirname != "." else "",
-                ]))
+                f.write("\n".join([get_template_head(dirname)]))
+
+                if dirname != ".":
+                    f.write("<tr class=\"w-2/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64("o.folder-home") + "\"/>" +
+                            "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"../\">../</a></th><td>-</td><td>-</td></tr>")
 
                 # Sort dirnames alphabetically
                 dirnames.sort()
@@ -53,14 +58,12 @@ def main():
                     f.write("<tr class=\"w-1/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64(filename) + "\"/>" + "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"" + filename + "\">" + filename + "</a></th><td>" +
                             get_file_size(path) + "</td><td>" + get_file_modified_time(path) + "</td></tr>\n")
 
-                f.write("\n".join([
-                    get_template_foot(),
-                ]))
+                f.write("\n".join([get_template_foot(total_files)]))
 
 
 def get_file_size(filepath):
     """
-    get file size
+    Get file size
     """
     size = os.path.getsize(filepath)
     if size < 1024:
@@ -76,14 +79,14 @@ def get_file_size(filepath):
 
 def get_file_modified_time(filepath):
     """
-    get file modified time
+    Get file modified time
     """
     return dt.datetime.fromtimestamp(os.path.getmtime(filepath)).strftime('%Y-%m-%d %H:%M:%S UTC')
 
 
 def get_template_head(foldername):
     """
-    get template head
+    Get template head
     """
     if foldername.startswith('.'):
         if not foldername.startswith('/', 1):
@@ -97,19 +100,20 @@ def get_template_head(foldername):
     return head
 
 
-def get_template_foot():
+def get_template_foot(total_files):
     """
-    get template foot
+    Get template foot
     """
     with open("/src/template/foot.html", "r", encoding="utf-8") as file:
         foot = file.read()
     foot = foot.replace("{{buildtime}}", "at " + dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC'))
+    foot = foot.replace("{{totalfiles}}", str(total_files))
     return foot
 
 
 def get_icon_base64(filename):
     """
-    get icon base64
+    Get icon base64
     """
     with open("/src/png/" + get_icon_from_filename(filename), "rb") as file:
         return "data:image/png;base64, " + base64.b64encode(file.read()).decode('ascii')
@@ -117,7 +121,7 @@ def get_icon_base64(filename):
 
 def get_icon_from_filename(filename):
     """
-    get icon from filename
+    Get icon from filename
     """
     extension = "." + filename.split(".")[-1]
     for i in data:
