@@ -18,6 +18,7 @@ def main():
     Main function
     """
     total_files = 0  # Initialize file count
+    total_size = 0  # Initialize total size
 
     if len(sys.argv) > 1:
         print("Changing directory to " + sys.argv[1])
@@ -35,6 +36,10 @@ def main():
         # Exclude index.html from the count
         filenames = [filename for filename in filenames if filename != 'index.html']
         total_files += len(filenames)
+        
+        # Calculate total size of the files, excluding 'index.html'
+        for filename in filenames:
+            total_size += os.path.getsize(os.path.join(dirname, filename))
 
     # Iterate again to generate index.html files in each subdirectory
     for dirname, dirnames, filenames in os.walk('.'):
@@ -63,17 +68,22 @@ def main():
                     f.write("<tr class=\"w-1/4 bg-gray-800 dark:bg-gray-900 border-b border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-800\"><th scope=\"row\" class=\"py-2 px-2 lg:px-6 font-medium text-gray-300 dark:text-gray-400 whitespace-nowrap flex align-middle\"><img style=\"max-width:23px; margin-right:5px\" src=\"" + get_icon_base64(filename) + "\"/>" + "<a class=\"my-auto text-blue-400 dark:text-blue-500\" href=\"" + filename + "\">" + filename + "</a></th><td>" +
                             get_file_size(path) + "</td><td>" + get_file_modified_time(path) + "</td></tr>\n")
 
-                f.write("\n".join([get_template_foot(total_files)]))
+                f.write("\n".join([get_template_foot(total_files, total_size)]))
 
     # Log the total number of files (excluding index.html)
     print(f"Total files (excluding index.html): {total_files}")
+    print(f"Total size (excluding index.html): {get_file_size(total_size)}")
 
 
 def get_file_size(filepath):
     """
     Get file size
     """
-    size = os.path.getsize(filepath)
+    if isinstance(filepath, str):  # single file path
+        size = os.path.getsize(filepath)
+    else:  # passed as the total size (numeric value)
+        size = filepath
+
     if size < 1024:
         return str(size) + " B"
     elif size < 1024 * 1024:
@@ -108,7 +118,7 @@ def get_template_head(foldername):
     return head
 
 
-def get_template_foot(total_files):
+def get_template_foot(total_files, total_size):
     """
     Get template foot
     """
@@ -118,6 +128,7 @@ def get_template_foot(total_files):
     # Ensure that the total_files placeholder is replaced with the actual value
     foot = foot.replace("{{buildtime}}", "at " + dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC'))
     foot = foot.replace("{{totalfiles}}", str(total_files))  # Replaces {{totalfiles}} with the total file count
+    foot = foot.replace("{{totalsize}}", get_file_size(total_size))  # Replaces {{totalsize}} with the total size
     
     # Debug print (optional)
     # print(f"Foot content after replacement:\n{foot}\n")
