@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Index of {{foldername}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-900 text-gray-200">
+    <header class="m-2 lg:m-4">
+        <h1 class="font-bold tracking-wide text-2xl text-gray-100">
+            Index of {{foldername}}
+        </h1>
+    </header>
 
-<body>
-    <div class="m-2 lg:m-4">
-        <span class="font-bold tracking-wide text-2xl text-gray-700">Index of {{foldername}}</span>
-    </div>
-    <div class="overflow-x-auto relative shadow-md sm:rounded-lg m-2 lg:m-4">
-        <table class="w-full text-sm text-left text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+    <main class="overflow-x-auto relative shadow-md sm:rounded-lg m-2 lg:m-4">
+        <table class="w-full text-sm text-left text-gray-400">
+            <thead class="text-xs text-gray-200 uppercase bg-gray-800">
                 <tr>
                     <th scope="col" class="py-3 px-6">Name</th>
                     <th scope="col" class="py-3 px-6">Size</th>
